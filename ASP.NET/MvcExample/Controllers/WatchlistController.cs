@@ -48,7 +48,7 @@ namespace MvcExample.Controllers
                 return View(model);
 
             var saveResult = await _watchlistService.CreateWatchlistAsync(model);
-
+           
             if (saveResult.IsError)
             {
                 ModelState.AddModelError("", "There was an error trying to create this watchlist");
@@ -73,7 +73,7 @@ namespace MvcExample.Controllers
         [HttpGet]
         public async Task<ActionResult> Edit(string watchlistId)
         {
-            var watchlist = await _watchlistService.GetWatchlistAsync(req =>
+            var watchlist = await _watchlistService.GetWatchlistsAsync(req =>
             {
                 req.UserId = UserId;
                 req.WatchlistId = watchlistId;
@@ -114,7 +114,7 @@ namespace MvcExample.Controllers
             {
                 req.UserId = UserId;
                 req.WatchlistId = watchlistId;
-                req.Members.Add(new WatchlistMemberItem() { ExternalEntityId = entityId });
+                req.AddExternalMember(entityId);
             });
 
             return RedirectToAction("Edit", new { WatchlistId = watchlistId });
@@ -127,7 +127,7 @@ namespace MvcExample.Controllers
             {
                 req.UserId = UserId;
                 req.WatchlistId = watchlistId;
-                req.Members.Add(new WatchlistMemberItem() { ExternalEntityId = entityId });
+                req.AddExternalMember(entityId);
             });
 
             return RedirectToAction("Edit", new { WatchlistId = watchlistId });

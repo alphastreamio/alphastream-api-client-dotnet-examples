@@ -46,10 +46,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AlphaStream.ApiClient.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AlphaStream.ApiClient.Core.1.0.0-beta0001.29\lib\net45\AlphaStream.ApiClient.Core.dll</HintPath>
+      <HintPath>..\..\packages\AlphaStream.ApiClient.Core.1.0.0-beta0001.30\lib\net45\AlphaStream.ApiClient.Core.dll</HintPath>
     </Reference>
     <Reference Include="AlphaStream.ApiClient.Watchlists, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AlphaStream.ApiClient.Watchlists.1.0.0-beta0001.29\lib\net45\AlphaStream.ApiClient.Watchlists.dll</HintPath>
+      <HintPath>..\..\packages\AlphaStream.ApiClient.Watchlists.1.0.0-beta0001.30\lib\net45\AlphaStream.ApiClient.Watchlists.dll</HintPath>
     </Reference>
     <Reference Include="IdentityModel, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\IdentityModel.2.6.0\lib\net45\IdentityModel.dll</HintPath>
