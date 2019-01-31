@@ -1,0 +1,69 @@
+﻿@model AlphaStream.ApiClient.Watchlists.Models.Watchlist
+@{
+    ViewBag.Title = " Edit Watchlist";
+}
+
+<h2>Editing the watchlist <b>@Model.Name</b></h2>
+@Html.ValidationSummary()
+<form method="post" action="@Url.Action("Edit", "Watchlist")">
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name)
+        @Html.EditorFor(m => m.Name, new { @class = "form-control", placeholder = "Enter watchlist name" })
+    </div>
+    <input type="hidden" name="WatchlistId" value="@Model.ExternalWatchlistId" />
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+<hr />
+<h3>Add member to this watchlist</h3>
+<form method="post" action="@Url.Action("AddMember")">
+    <div class="form-group">
+        <label for="EntityId">Entity Id</label>
+        <input type="text" id="EntityId" name="EntityId" value="" placeholder="Enter entity id" />
+    </div>
+    <input type="hidden" name="WatchlistId" value="@Model.ExternalWatchlistId" />
+    <button type="submit" class="btn btn-primary">Add member</button>
+</form>
+<hr />
+
+@if (!Model.Members.Any())
+{
+    <div class="alert alert-warning" role="alert">
+        There are no members in this watchlist
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">External Entity Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Symbol</th>
+                <th scope="col">Type</th>
+                <th scope="col">Alpha Stream Unique Id</th>
+                <th scope="col">Mapping Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Members)
+            {
+                <tr>
+                    <th scope="row">@item.ExternalEntityId</th>
+                    <td>@item.Name</td>
+                    <td>@item.Symbol</td>
+                    <td>@item.Type</td>
+                    <td>@item.UniqueId</td>
+                    <td>@item.MappingResult</td>
+                    <td>
+                        @using (Html.BeginForm("DeleteMember", "Watchlist", FormMethod.Post))
+                        {
+                            <input type="hidden" name="watchlistId" value="@Model.ExternalWatchlistId" />
+                            <input type="hidden" name="entityId" value="@item.ExternalEntityId" />
+                            <input type="submit" class="btn btn-danger" value="Delete" />
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
