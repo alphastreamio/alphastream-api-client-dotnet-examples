@@ -6,8 +6,8 @@
 
 <h2>Watchlists</h2>
 
-@Html.ActionLink("Create a new watchlist", "Create")
-
+<a class="btn btn-primary" href="@Url.Action("Create")">Create a new watchlist</a>
+<hr/>
 @if (TempData.ContainsKey("saved") && TempData["saved"].ToString() == "true")
 {
     <div class="alert alert-success" role="alert">
@@ -19,7 +19,7 @@
     if (TempData["deleted"].ToString() == "true")
     {
         <div class="alert alert-success" role="alert">
-            Watchlist deeted!
+            Watchlist deleted!
         </div>
     }
 

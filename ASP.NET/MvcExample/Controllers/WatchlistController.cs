@@ -17,8 +17,7 @@ namespace MvcExample.Controllers
             var clientId = ConfigurationManager.AppSettings["ClientId"];
             var clientSecret = ConfigurationManager.AppSettings["ClientSecret"];
 
-            _watchlistService = WatchlistApiClientFactory.Create(Environment.UAT, clientId, clientSecret);
-
+            _watchlistService = WatchlistApiClientFactory.Create(Environment.Production, clientId, clientSecret);
         }
 
         public async Task<ActionResult> Index(bool saved = false, bool? deleted = null)
