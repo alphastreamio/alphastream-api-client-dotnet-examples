@@ -1,0 +1,19 @@
+﻿@model AlphaStream.ApiClient.Watchlists.Models.CreateWatchlistRequest
+@{
+    ViewBag.Title = "Create new Watchlist";
+}
+
+<h2>Create new Watchlist</h2>
+@Html.ValidationSummary()
+<form method="post" action="@Url.Action("Create", "Watchlist")">
+    <div class="form-group">
+        @Html.LabelFor(m => m.WatchlistId)
+        @Html.EditorFor(m => m.WatchlistId, new { @class = "form-control", placeholder = "Enter watchlist id" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name)
+        @Html.EditorFor(m => m.Name, new { @class = "form-control", placeholder = "Enter watchlist name" })
+    </div>
+    @Html.HiddenFor(m => m.UserId)
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

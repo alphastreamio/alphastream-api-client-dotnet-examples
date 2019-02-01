@@ -1,0 +1,72 @@
+﻿@model AlphaStream.ApiClient.Watchlists.Models.UsersWatchlistResponse
+
+@{
+    ViewBag.Title = "Watchlists";
+}
+
+<h2>Watchlists</h2>
+
+<a class="btn btn-primary" href="@Url.Action("Create")">Create a new watchlist</a>
+<hr/>
+@if (TempData.ContainsKey("saved") && TempData["saved"].ToString() == "true")
+{
+    <div class="alert alert-success" role="alert">
+        Watchlist created!
+    </div>
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if (TempData["deleted"].ToString() == "true")
+    {
+        <div class="alert alert-success" role="alert">
+            Watchlist deleted!
+        </div>
+    }
+
+    if (TempData["deleted"].ToString() == "false")
+    {
+        <div class="alert alert-danger" role="alert">
+            There was an error trying to delete your watchlist!
+        </div>
+    }
+}
+
+@if (!Model.Payload.Any())
+{
+    <div class="alert alert-warning" role="alert">
+        There are no watchlists for this user
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Watchlist Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Members</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Payload)
+            {
+                <tr>
+                    <th scope="row">@item.ExternalWatchlistId</th>
+                    <td>@item.Name</td>
+                    <td>@item.Members.Count</td>
+                    <td>
+                        <a class="btn btn-primary" href="@Url.Action("Edit", new { WatchlistId = item.ExternalWatchlistId})">Edit</a>
+                       
+                    </td>
+                    <td>
+                        @using (Html.BeginForm("Delete", "Watchlist", FormMethod.Post))
+                        {
+                            <input type="hidden" name="watchlistId" value="@item.ExternalWatchlistId" />
+                            <input type="submit" class="btn btn-danger" value="Delete" />
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
