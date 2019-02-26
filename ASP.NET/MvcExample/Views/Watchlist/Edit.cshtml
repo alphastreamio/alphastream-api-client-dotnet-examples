@@ -1,9 +1,9 @@
-﻿@model AlphaStream.ApiClient.Watchlists.Models.Watchlist
+﻿@model MvcExample.Models.WatchlistViewModel
 @{
     ViewBag.Title = " Edit Watchlist";
 }
 
-<h2>Editing the watchlist <b>@Model.Name</b></h2>
+<h2>Editing the watchlist <b>@Model.Name</b> (@Model.ExternalWatchlistId)</h2>
 @Html.ValidationSummary()
 <form method="post" action="@Url.Action("Edit", "Watchlist")">
     <div class="form-group">
@@ -12,6 +12,15 @@
     </div>
     <input type="hidden" name="WatchlistId" value="@Model.ExternalWatchlistId" />
     <button type="submit" class="btn btn-primary">Update</button>
+</form>
+<hr />
+<form method="post" action="@Url.Action("ChangeId", "Watchlist")">
+    <div class="form-group">
+        @Html.LabelFor(m => m.NewWatchlistId)
+        @Html.EditorFor(m => m.NewWatchlistId, new { @class = "form-control", placeholder = "Enter new watchlist Id" })
+    </div>
+    <input type="hidden" name="ExternalWatchlistId" value="@Model.ExternalWatchlistId" />
+    <button type="submit" class="btn btn-primary">Update Watchlist ID</button>
 </form>
 <hr />
 <h3>Add member to this watchlist</h3>
@@ -57,8 +66,11 @@ else
                     <td>
                         @using (Html.BeginForm("DeleteMember", "Watchlist", FormMethod.Post))
                         {
+                            var isLastItem = Model.Members.Count == 1;
+
                             <input type="hidden" name="watchlistId" value="@Model.ExternalWatchlistId" />
                             <input type="hidden" name="entityId" value="@item.ExternalEntityId" />
+                            <input type="hidden" name="isLastItem" value="@isLastItem.ToString()" />
                             <input type="submit" class="btn btn-danger" value="Delete" />
                         }
                     </td>

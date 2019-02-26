@@ -1,8 +1,10 @@
-﻿using AlphaStream.ApiClient.Watchlists;
+using AlphaStream.ApiClient.Watchlists;
 using AlphaStream.ApiClient.Watchlists.Models;
 using System.Configuration;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using MvcExample.Models;
 using Environment = AlphaStream.ApiClient.Core.Environment;
 
 namespace MvcExample.Controllers
@@ -47,7 +49,7 @@ namespace MvcExample.Controllers
                 return View(model);
 
             var saveResult = await _watchlistService.CreateWatchlistAsync(model);
-           
+
             if (saveResult.IsError)
             {
                 ModelState.AddModelError("", "There was an error trying to create this watchlist");
@@ -81,11 +83,13 @@ namespace MvcExample.Controllers
             if (watchlist.IsError)
                 return HttpNotFound();
 
-            return View(watchlist.Payload);
+            var viewModel = AutoMapper.Mapper.Map<WatchlistViewModel>(watchlist.Payload);
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(Watchlist model)
+        public async Task<ActionResult> Edit(WatchlistViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -97,13 +101,8 @@ namespace MvcExample.Controllers
                 req.Name = model.Name;
             });
 
-            if (updateResult.IsError)
-            {
-                ModelState.AddModelError("", "There was an error trying to update this watchlist");
-                return View(model);
-            }
 
-            return RedirectToAction("Edit", new { Updated = true });
+            return RedirectToAction("Edit", new { Updated = true, WatchlistId = model.WatchlistId });
         }
 
         [HttpPost]
@@ -120,16 +119,39 @@ namespace MvcExample.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> DeleteMember(string watchlistId, string entityId)
+        public async Task<ActionResult> DeleteMember(string watchlistId, string entityId, bool isLastItem)
         {
             var removeMemberResult = await _watchlistService.DeleteWatchlistMembersAsync(req =>
             {
                 req.UserId = UserId;
                 req.WatchlistId = watchlistId;
                 req.AddExternalMember(entityId);
+                req.DeleteParentWatchlist = isLastItem;
             });
 
+            if (isLastItem && removeMemberResult.HttpStatusCode == HttpStatusCode.OK)
+                return RedirectToAction("Index", new { deleted = true});
+
             return RedirectToAction("Edit", new { WatchlistId = watchlistId });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ChangeId(WatchlistViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("Edit", model);
+
+            var updatedIdResult = await _watchlistService.UpdateWatchlistIdAsync(UserId,
+                model.ExternalWatchlistId, model.NewWatchlistId);
+
+            if (updatedIdResult.IsError)
+            {
+                ModelState.AddModelError("", "There was an error trying to update ID for this watchlist");
+
+                return View("Edit", model);
+            }
+
+            return RedirectToAction("Edit", new { Updated = true, WatchlistId = updatedIdResult.Payload.ExternalWatchlistId });
         }
     }
 }
