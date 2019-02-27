@@ -1,4 +1,4 @@
-using AlphaStream.ApiClient.Watchlists;
+﻿using AlphaStream.ApiClient.Watchlists;
 using AlphaStream.ApiClient.Watchlists.Models;
 using System.Configuration;
 using System.Net;
@@ -12,14 +12,14 @@ namespace MvcExample.Controllers
     public class WatchlistController : Controller
     {
         private readonly WatchlistService _watchlistService;
-        private const string UserId = "test-example-user-1";
+        private const string UserId = "test-example-user-2";
 
         public WatchlistController()
         {
             var clientId = ConfigurationManager.AppSettings["ClientId"];
             var clientSecret = ConfigurationManager.AppSettings["ClientSecret"];
 
-            _watchlistService = WatchlistApiClientFactory.Create(Environment.Production, clientId, clientSecret);
+            _watchlistService = WatchlistApiClientFactory.Create(Environment.UAT, clientId, clientSecret);
         }
 
         public async Task<ActionResult> Index(bool saved = false, bool? deleted = null)
@@ -48,7 +48,7 @@ namespace MvcExample.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var saveResult = await _watchlistService.CreateWatchlistAsync(model);
+            var saveResult = await _watchlistService.CreateOrMergeWatchlistAsync(model);
 
             if (saveResult.IsError)
             {
